@@ -1,0 +1,16 @@
+Script.cpp
+run_tests.cpp
+TinyJS.cpp
+TinyJS.h
+TinyJS_Functions.cpp
+TinyJS_Functions.h
+TinyJS_MathFunctions.cpp
+TinyJS_MathFunctions.h
+>compiler=C++
+>memtype=xmm-split external flash code + ram data
+>optimize=-Os
+>-Wall
+>-mno-fcache
+>-fno-exceptions
+>-fno-rtti
+>BOARD::GENERIC
