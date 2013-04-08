@@ -1,3 +1,7 @@
+# Compiled binaries
+Script
+run_tests
+
 # Compiled Object files
 *.slo
 *.lo

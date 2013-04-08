@@ -1,9 +1,6 @@
-#CC=g++
-#CFLAGS=-c -g -Wall -rdynamic -D_DEBUG
-#LDFLAGS=-g -rdynamic
-CC=/opt/parallax/bin/propeller-elf-g++
-CFLAGS=-c -Wall -Os -fno-exceptions 
-LDFLAGS=-static -fno-exceptions
+CC=g++
+CFLAGS=-c -g -Wall -rdynamic -D_DEBUG
+LDFLAGS=-g -rdynamic
 
 SOURCES=  \
 TinyJS.cpp \
