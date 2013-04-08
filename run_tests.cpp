@@ -215,11 +215,11 @@ bool run_test(const char *filename) {
   registerFunctions(&s);
   registerMathFunctions(&s);
   s.root->addChild("result", new CScriptVar("0",SCRIPTVAR_INTEGER));
-  try {
+//  try {
     s.execute(buffer);
-  } catch (CScriptException *e) {
-    printf("ERROR: %s\n", e->text.c_str());
-  }
+//  } catch (CScriptException *e) {
+//    printf("ERROR: %s\n", e->text.c_str());
+//  }
   bool pass = s.root->getParameter("result")->getBool();
 
   if (pass)

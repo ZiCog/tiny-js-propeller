@@ -61,21 +61,24 @@ int main(int argc, char **argv)
   js->addNative("function dump()", &js_dump, js);
   /* Execute out bit of code - we could call 'evaluate' here if
      we wanted something returned */
-  try {
+//  try {
     js->execute("var lets_quit = 0; function quit() { lets_quit = 1; }");
     js->execute("print(\"Interactive mode... Type quit(); to exit, or print(...); to print something, or dump() to dump the symbol table!\");");
+/*
   } catch (CScriptException *e) {
     printf("ERROR: %s\n", e->text.c_str());
   }
-
+*/
   while (js->evaluate("lets_quit") == "0") {
     char buffer[2048];
     fgets ( buffer, sizeof(buffer), stdin );
-    try {
+//    try {
       js->execute(buffer);
+/*
     } catch (CScriptException *e) {
       printf("ERROR: %s\n", e->text.c_str());
     }
+*/
   }
   delete js;
 #ifdef _WIN32

@@ -331,7 +331,8 @@ void CScriptLex::match(int expected_tk) {
         ostringstream errorString;
         errorString << "Got " << getTokenStr(tk) << " expected " << getTokenStr(expected_tk)
          << " at " << getPosition(tokenStart);
-        throw new CScriptException(errorString.str());
+        //throw new CScriptException(errorString.str());
+	exit(1);
     }
     getNextToken();
 }
@@ -1064,7 +1065,9 @@ CScriptVar *CScriptVar::mathsOp(CScriptVar *b, int op) {
                 case LEX_LEQUAL:    return new CScriptVar(da<=db);
                 case '>':     return new CScriptVar(da>db);
                 case LEX_GEQUAL:    return new CScriptVar(da>=db);
-                default: throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the Int datatype");
+                default:
+			//throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the Int datatype");
+			exit(1);
             }
         } else {
             // use doubles
@@ -1081,7 +1084,9 @@ CScriptVar *CScriptVar::mathsOp(CScriptVar *b, int op) {
                 case LEX_LEQUAL:    return new CScriptVar(da<=db);
                 case '>':     return new CScriptVar(da>db);
                 case LEX_GEQUAL:    return new CScriptVar(da>=db);
-                default: throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the Double datatype");
+                default: 
+			//throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the Double datatype");
+			exit(1);
             }
         }
     } else if (a->isArray()) {
@@ -1089,14 +1094,18 @@ CScriptVar *CScriptVar::mathsOp(CScriptVar *b, int op) {
       switch (op) {
            case LEX_EQUAL: return new CScriptVar(a==b);
            case LEX_NEQUAL: return new CScriptVar(a!=b);
-           default: throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the Array datatype");
+           default:
+		//throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the Array datatype");
+		exit(1);
       }
     } else if (a->isObject()) {
           /* Just check pointers */
           switch (op) {
                case LEX_EQUAL: return new CScriptVar(a==b);
                case LEX_NEQUAL: return new CScriptVar(a!=b);
-               default: throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the Object datatype");
+               default:
+			//throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the Object datatype");
+			exit(1);
           }
     } else {
        string da = a->getString();
@@ -1110,7 +1119,9 @@ CScriptVar *CScriptVar::mathsOp(CScriptVar *b, int op) {
            case LEX_LEQUAL:    return new CScriptVar(da<=db);
            case '>':     return new CScriptVar(da>db);
            case LEX_GEQUAL:    return new CScriptVar(da>=db);
-           default: throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the string datatype");
+           default:
+		// throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the string datatype");
+		exit(1);
        }
     }
     ASSERT(0);
@@ -1317,9 +1328,10 @@ void CTinyJS::execute(const string &code) {
 #endif
     scopes.clear();
     scopes.push_back(root);
-    try {
+//    try {
         bool execute = true;
         while (l->tk) statement(execute);
+/*
     } catch (CScriptException *e) {
         ostringstream msg;
         msg << "Error " << e->text;
@@ -1331,8 +1343,10 @@ void CTinyJS::execute(const string &code) {
         delete l;
         l = oldLex;
 
-        throw new CScriptException(msg.str());
+        //throw new CScriptException(msg.str());
+	exit(1);
     }
+*/
     delete l;
     l = oldLex;
     scopes = oldScopes;
@@ -1349,13 +1363,14 @@ CScriptVarLink CTinyJS::evaluateComplex(const string &code) {
     scopes.clear();
     scopes.push_back(root);
     CScriptVarLink *v = 0;
-    try {
+//    try {
         bool execute = true;
         do {
           CLEAN(v);
           v = base(execute);
           if (l->tk!=LEX_EOF) l->match(';');
         } while (l->tk!=LEX_EOF);
+/*
     } catch (CScriptException *e) {
       ostringstream msg;
       msg << "Error " << e->text;
@@ -1367,8 +1382,10 @@ CScriptVarLink CTinyJS::evaluateComplex(const string &code) {
       delete l;
       l = oldLex;
 
-        throw new CScriptException(msg.str());
+        //throw new CScriptException(msg.str());
+	exit(1);
     }
+*/
     delete l;
     l = oldLex;
     scopes = oldScopes;
@@ -1452,7 +1469,8 @@ CScriptVarLink *CTinyJS::functionCall(bool &execute, CScriptVarLink *function, C
     if (!function->var->isFunction()) {
         string errorMsg = "Expecting '";
         errorMsg = errorMsg + function->name + "' to be a function";
-        throw new CScriptException(errorMsg.c_str());
+        //throw new CScriptException(errorMsg.c_str());
+	exit(1);
     }
     l->match('(');
     // create a new symbol table entry for execution of this function
@@ -1498,18 +1516,21 @@ CScriptVarLink *CTinyJS::functionCall(bool &execute, CScriptVarLink *function, C
         CScriptLex *oldLex = l;
         CScriptLex *newLex = new CScriptLex(function->var->getString());
         l = newLex;
-        try {
+//        try {
           block(execute);
           // because return will probably have called this, and set execute to false
           execute = true;
+/*
         } catch (CScriptException *e) {
           exception = e;
         }
+*/
         delete newLex;
         l = oldLex;
 
         if (exception)
-          throw exception;
+          //throw exception;
+	  exit(1);
     }
 #ifdef TINYJS_CALL_STACK
     if (!call_stack.empty()) call_stack.pop_back();
@@ -2029,7 +2050,8 @@ void CTinyJS::statement(bool &execute) {
         if (loopCount<=0) {
             root->trace();
             TRACE("WHILE Loop exceeded %d iterations at %s\n", TINYJS_LOOP_MAX_ITERATIONS, l->getPosition().c_str());
-            throw new CScriptException("LOOP_ERROR");
+            //throw new CScriptException("LOOP_ERROR");
+	    exit(1);
         }
     } else if (l->tk==LEX_R_FOR) {
         l->match(LEX_R_FOR);
@@ -2081,7 +2103,8 @@ void CTinyJS::statement(bool &execute) {
         if (loopCount<=0) {
             root->trace();
             TRACE("FOR Loop exceeded %d iterations at %s\n", TINYJS_LOOP_MAX_ITERATIONS, l->getPosition().c_str());
-            throw new CScriptException("LOOP_ERROR");
+            //throw new CScriptException("LOOP_ERROR");
+            exit(1);
         }
     } else if (l->tk==LEX_R_RETURN) {
         l->match(LEX_R_RETURN);
